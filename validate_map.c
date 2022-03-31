@@ -12,10 +12,7 @@
 
 #include "so_long.h"
 
-// int	check_characters(char **map_array)
-// {
 
-// }
 
 int check_file_path(char *path)
 {
@@ -74,8 +71,8 @@ void    fill_array_from_File(char *map_file, char **map_array)
 	}
     map_array[i] = 0;
 	i   = 0;
-	while (map_array[i] != 0)
-		printf("%s",map_array[i++]);
+	// while (map_array[i] != 0)
+	// 	printf("%s",map_array[i++]);
 	close(fd);
 }
 
@@ -162,6 +159,36 @@ int	is_contain_at_least_C(char **map_array)
 	return (0);
 }
 
+
+int	check_exist(char ** map_array)
+{
+	int i;
+	int	j;
+	int counter;
+	
+	i = 0;
+	counter = 0;
+	while(map_array[i])
+	{
+		j = 0;
+		while(map_array[i][j])
+		{
+			char c = map_array[i][j];
+			if(c == 'E')
+				counter++;
+			j++;
+		}
+		i++;	
+	}
+	if (counter == 0)
+	{
+		printf("\033[0;31m Invalid Map, should contain at least one exit");
+		return (0);
+	}
+	return (1);
+	
+}
+
 int check_map_is_valid(char **map_array, char *map_file)
 {
 	int	i;
@@ -182,6 +209,8 @@ int check_map_is_valid(char **map_array, char *map_file)
 		printf("\033[0;31m Invalid Map, lines length not equals");
 		return (0);
 	}
+	if(!check_exist(map_array))
+		return (0);
 	if (!is_contain_at_least_C(map_array))
 	{
 		printf("\033[0;31m Invalid Map, sould contain at least one C");

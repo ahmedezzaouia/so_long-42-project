@@ -19,7 +19,7 @@
 #include <stdlib.h>
 
 int check_file_path(char *path);
-int check_map_is_valid();
+int check_map_is_valid(char **map_array, char *map_file);
 char    *get_next_line(int fd);
 void    fill_array_from_File(char *map_file, char **map_array);
 int	ft_count_file_lines(char *map_file);

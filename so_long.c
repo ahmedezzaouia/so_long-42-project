@@ -80,7 +80,7 @@ int	main(int ac, char **argv)
 
 	if (ac != 2)
 	{
-		printf("\033[0;31m please enter a map");
+		printf("\033[0;31m Invalid Map Name");
 		return (0);
 	}
 		
@@ -108,7 +108,7 @@ int	main(int ac, char **argv)
 	printf("\n");
 	printf("\n");
 	printf("\n");
-  i = 0;
+
 
 
  	if(!check_map_is_valid(map_array,"map.ber"))
@@ -116,16 +116,16 @@ int	main(int ac, char **argv)
 	printf("\033[0;32m Valid Map");
 
 
-	vars.x = 0;
-	vars.y = 0;
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, 1000,700, "Hello world!");
-	vars.img = mlx_xpm_file_to_image(vars.mlx, "./ima.xpm", &width, &height);
-	//vars.blck_img = mlx_xpm_file_to_image(vars.mlx, "./black.xpm", &width, &height);
-	mlx_put_image_to_window(vars.mlx, vars.win, vars.img,  0, 0);
-	mlx_hook(vars.win,  2 ,0, key_hook, &vars);
-	mlx_hook(vars.win,  17 ,0, f,NULL);
-	mlx_loop(vars.mlx);
+	// vars.x = 0;
+	// vars.y = 0;
+	// vars.mlx = mlx_init();
+	// vars.win = mlx_new_window(vars.mlx, 1000,700, "Hello world!");
+	// vars.img = mlx_xpm_file_to_image(vars.mlx, "./ima.xpm", &width, &height);
+	// //vars.blck_img = mlx_xpm_file_to_image(vars.mlx, "./black.xpm", &width, &height);
+	// mlx_put_image_to_window(vars.mlx, vars.win, vars.img,  0, 0);
+	// mlx_hook(vars.win,  2, 0,  key_hook,  &vars);
+	// mlx_hook(vars.win,  17 , 0,  f, NULL);
+	// mlx_loop(vars.mlx);
 }
 
 
