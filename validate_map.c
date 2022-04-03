@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/18 10:28:33 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/02/27 12:58:34 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/03 11:16:22 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	ft_count_file_lines(char *map_file)
 
 }
 
-void    fill_array_from_File(char *map_file, char **map_array)
+void	fill_array_from_File(char *map_file, char **map_array)
 {
     char *line;
 	int i;
@@ -66,13 +66,12 @@ void    fill_array_from_File(char *map_file, char **map_array)
 	while ((line = get_next_line(fd)))
 	{
 		map_array[i] = line;
-		// printf("line == %s\n",map_array[i]);
 		i++;
 	}
     map_array[i] = 0;
 	i   = 0;
-	// while (map_array[i] != 0)
-	// 	printf("%s",map_array[i++]);
+	while (map_array[i] != 0)
+		printf("%s",map_array[i++]);
 	close(fd);
 }
 
@@ -83,7 +82,7 @@ int	check_map_line_length(char **map_array, int file_lines)
 
 	i = 0;
 
-	while (map_array[i] /*&& map_array[i + 1]*/)
+	while (map_array[i])
 	{
 		line_length = ft_strlen(map_array[i]);
 		if (i == file_lines  - 1)
@@ -194,15 +193,11 @@ int check_map_is_valid(char **map_array, char *map_file)
 	int	i;
 	int	j;
 	int	lines_length;
-	// char	double_chars[5];
 	int	counter;
 
 	j = 0;
 	i = 0;
 	counter = 0;
-	// while (i < 5)
-	// 	double_chars[i++] = 0;
-	// i = 0;
 	lines_length = ft_count_file_lines(map_file);
 	if (!check_map_line_length(map_array, lines_length))
 	{
@@ -218,7 +213,6 @@ int check_map_is_valid(char **map_array, char *map_file)
 	}
 	while (map_array[i] != 0)
 	{
-		printf("%d",check_last_and_first_char(map_array[i]));
 		if(check_last_and_first_char(map_array[i])  == 0)
 		{
 			printf("\033[0;31m Invalid Map, line should end and start with 1");

@@ -3,9 +3,7 @@ NAME = so_long
 LIBFT = ./libft/libft.a
 CC = gcc
 CFLAGS = -lmlx -framework OpenGl -framework AppKit -g
-
 OBJS = $(SRCS:.c=.o)
-
 
 all: $(NAME)
 

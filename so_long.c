@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:10:22 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/02/27 12:56:48 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/03 11:49:43 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,50 +33,104 @@ void	move_img (t_vars *vars)
 int	key_hook(int keycode, t_vars *vars)
 {
 
-	if (keycode == 124)
-	{
-		if (vars->x <= 800)
-			vars->x += 100;	
-		move_img(vars);
-	}
-	else if (keycode == 123)
-	{
-		if (vars->x > 0)
-			vars->x -= 100;	
-		move_img(vars);
-	}
-	if (keycode == 126)
-	{
-		if (vars->y > 0)
-			vars->y -= 100;	
-		move_img(vars);
-	}
-	else if (keycode == 125)
-	{
-		printf("y = %d\n",vars->y);
-		if (vars->y <= 500)
-			vars->y += 100;	
-		move_img(vars);
-	}
-	printf("key == %d\n",keycode);
+	printf("keycode == %d\n",keycode);
 	return (1);
 }
-int  f(viod)
+int	exit_win(void)
 {
 
 	exit(1);
 	return(0);;
 }
 
+int	get_width(t_vars	vars, char **map_array, int lines_count)
+{
+	int	width;
+
+	width = 0;
+	while (map_array[0][width])
+		width++;
+	return (--width * 64);
+}
+
+void	draw_to_win(t_vars vars, char **map_array)
+{
+	int	y;
+	int	x;
+	int width;
+	int height;
+
+	y = 0;
+	while (map_array[y])
+	{
+		x = 0;
+		while (map_array[y][x])
+		{
+			if(map_array[y][x] == '1')
+			{
+				vars.img = mlx_xpm_file_to_image(vars.mlx, "./1.xpm", &width, &height);
+				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,  x * 64, y * 64);
+			}
+			else if(map_array[y][x] == 'P')
+			{
+				vars.img = mlx_xpm_file_to_image(vars.mlx, "./P.xpm", &width, &height);
+				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+			}
+			else if(map_array[y][x] == 'E')
+			{
+				vars.img = mlx_xpm_file_to_image(vars.mlx, "./E.xpm", &width, &height);
+				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+			}
+			else if(map_array[y][x] == 'C')
+			{
+				vars.img = mlx_xpm_file_to_image(vars.mlx, "./C.xpm", &width, &height);
+				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+			}
+			else if(map_array[y][x] == '0')
+			{
+				vars.img = mlx_xpm_file_to_image(vars.mlx, "./0.xpm", &width, &height);
+				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+			}
+			x++;
+
+		}
+		y++;
+	}
+}
+
+void	rabit_move(char *str, char **map_array)
+{
+	int	x;
+	int y;
+
+	x = 0;
+	y = 0;
+	if (str == "right")
+	{
+		while (map_array[y])
+		{
+			x = 0;
+			while (map_array[y][x])
+			{
+				if(map_array[y][x] == 'P')
+				{
+					
+				}
+			}
+			y++;
+		}
+	}
+}
+
 int	main(int ac, char **argv)
 {
 	t_vars	vars;
-	int width;
-	int height;
 	int		i;
 	int 	fd;	
 	char    **map_array;
 	char *line;
+	int height;
+	int width;
 
 	if (ac != 2)
 	{
@@ -93,39 +147,27 @@ int	main(int ac, char **argv)
 
 	printf("line length = %d\n",i);
 
-	printf("\n");
-	printf("\n");
-	printf("\n");
-
 	map_array = malloc((i + 1) * sizeof(char *));
 	if (!map_array)
 		return (0);
-	
 	fill_array_from_File(argv[1], map_array);
-	 i = 0;
-	// while (map_array[i] != 0)
-	// 	// printf("%s",map_array[i++]);
-	printf("\n");
-	printf("\n");
-	printf("\n");
 
 
 
  	if(!check_map_is_valid(map_array,"map.ber"))
 	 	return (0);
-	printf("\033[0;32m Valid Map");
+	printf("\n\033[0;32m Valid Map");
+    printf("height === %d\n",i * 64);
 
-
-	// vars.x = 0;
-	// vars.y = 0;
-	// vars.mlx = mlx_init();
-	// vars.win = mlx_new_window(vars.mlx, 1000,700, "Hello world!");
-	// vars.img = mlx_xpm_file_to_image(vars.mlx, "./ima.xpm", &width, &height);
-	// //vars.blck_img = mlx_xpm_file_to_image(vars.mlx, "./black.xpm", &width, &height);
+	vars.mlx = mlx_init();
+	vars.win = mlx_new_window(vars.mlx, get_width(vars, map_array, i), 64 * i, "Hello world!");
+	// vars.img = mlx_xpm_file_to_image(vars.mlx, "./background.xpm", &height	, &width);
 	// mlx_put_image_to_window(vars.mlx, vars.win, vars.img,  0, 0);
-	// mlx_hook(vars.win,  2, 0,  key_hook,  &vars);
-	// mlx_hook(vars.win,  17 , 0,  f, NULL);
-	// mlx_loop(vars.mlx);
+	draw_to_win(vars, map_array);
+	
+	mlx_hook(vars.win,  2, 0,  key_hook,  &vars);
+	mlx_hook(vars.win,  17 , 0,  exit_win, NULL);
+	mlx_loop(vars.mlx);
 }
 
 
