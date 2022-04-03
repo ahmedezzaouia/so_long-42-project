@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:10:22 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/03 11:49:43 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/03 17:51:36 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,15 @@ typedef struct	s_vars {
 	void	*win;
 	void	*img;
 	void	*blck_img;
+	char	**map_array;
+	int		moves_count;
 	int	x;
 	int y;
 }				t_vars;
 
-void	move_img (t_vars *vars)
-{
-	mlx_clear_window(vars->mlx, vars->win);
 
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->img, vars->x, vars->y);
 
-}
-
-int	key_hook(int keycode, t_vars *vars)
-{
-
-	printf("keycode == %d\n",keycode);
-	return (1);
-}
-int	exit_win(void)
+int	exit_win()
 {
 
 	exit(1);
@@ -52,6 +42,7 @@ int	get_width(t_vars	vars, char **map_array, int lines_count)
 		width++;
 	return (--width * 64);
 }
+
 
 void	draw_to_win(t_vars vars, char **map_array)
 {
@@ -98,29 +89,120 @@ void	draw_to_win(t_vars vars, char **map_array)
 	}
 }
 
-void	rabit_move(char *str, char **map_array)
+int	still_has_carrots(char **map_array)
+{
+	int x;
+	int	y;
+	int	counter;
+
+	y = 0;
+	counter = 0;
+	while (map_array[y])
+	{
+		x = 0;
+		while (map_array[y][x])
+		{
+			if (map_array[y][x] == 'C')
+				counter++;
+			x++;	
+		}
+		y++;
+	}
+	return (counter);
+}
+
+void	print_moves(t_vars *vars)
+{	
+	vars->moves_count++;
+	printf("move : %d\n",vars->moves_count);
+}
+
+void	rabit_move(t_vars *vars,int right_left, int up_down)
 {
 	int	x;
 	int y;
 
 	x = 0;
 	y = 0;
-	if (str == "right")
+
+	while (vars->map_array[y])
 	{
-		while (map_array[y])
+		x = 0;
+		while (vars->map_array[y][x])
 		{
-			x = 0;
-			while (map_array[y][x])
+			if(vars->map_array[y][x] == 'P')
 			{
-				if(map_array[y][x] == 'P')
+				if (vars->map_array[y + up_down][x + right_left] == 'C')
 				{
-					
+					vars->map_array[y][x] = '0';
+					vars->map_array[y + up_down][x + right_left] = 'P';
+					mlx_clear_window(vars->mlx, vars->win);
+					draw_to_win(*vars, vars->map_array);
+					vars->moves_count++;
+					printf("move : %d\n",vars->moves_count);
+					return ;
+				}
+				if (vars->map_array[y + up_down][x + right_left] == '0')
+				{
+					vars->map_array[y][x] = '0';
+					vars->map_array[y + up_down][x + right_left] = 'P';
+					mlx_clear_window(vars->mlx, vars->win);
+					draw_to_win(*vars, vars->map_array);
+					vars->moves_count++;
+					printf("move : %d\n",vars->moves_count);
+					return ;
+				}
+				// if (vars->map_array[y + up_down][x + right_left] == '1')
+				// {
+				// 	return ;
+				// }
+				if (vars->map_array[y + up_down][x + right_left] == 'E')
+				{
+					if (still_has_carrots(vars->map_array) == 0)
+					{
+						vars->moves_count++;
+						printf("move : %d\n",vars->moves_count);
+						exit_win();
+					}
+					return ;
 				}
 			}
-			y++;
+			x++;
 		}
+		y++;
 	}
+	
 }
+
+int	key_hook(int keycode, t_vars *vars)
+{
+
+	// printf("keycode == %d\n",keycode);
+	if (keycode == 53)
+		exit_win();
+	if (keycode == 13 || keycode == 126)
+	{
+		rabit_move(vars, 0, -1);
+	}
+	if (keycode == 1 || keycode == 125)
+	{
+		rabit_move(vars, 0, 1);
+	}
+	if (keycode == 0 || keycode == 123)
+	{
+		rabit_move(vars, -1, 0);
+	}
+	if (keycode == 2 || keycode == 124)
+	{
+		rabit_move(vars, 1, 0);
+	}
+	return (1);
+}
+
+
+
+
+
 
 int	main(int ac, char **argv)
 {
@@ -132,6 +214,7 @@ int	main(int ac, char **argv)
 	int height;
 	int width;
 
+	vars.moves_count = 0;
 	if (ac != 2)
 	{
 		printf("\033[0;31m Invalid Map Name");
@@ -151,7 +234,7 @@ int	main(int ac, char **argv)
 	if (!map_array)
 		return (0);
 	fill_array_from_File(argv[1], map_array);
-
+	vars.map_array = map_array;
 
 
  	if(!check_map_is_valid(map_array,"map.ber"))
