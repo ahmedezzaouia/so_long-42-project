@@ -18,7 +18,7 @@ int check_file_path(char *path)
 {
     char    *expath;
 
-    expath = ft_strchr(path, '.'); 
+    expath = ft_strrchr(path, '.'); 
     if (!expath)
         return (0);
     if (ft_strncmp(expath, ".ber", ft_strlen(expath)) != 0)

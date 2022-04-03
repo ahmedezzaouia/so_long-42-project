@@ -13,16 +13,22 @@
 
 #include "so_long.h"
 
-typedef struct	s_vars {
+typedef struct	s_game {
 	void	*mlx;
 	void	*win;
 	void	*img;
+	void	*player;
+	void	*wall;
+	void	*rabit;
+	void	*space;
+	void	*exit;
+	void	*carrote;
 	void	*blck_img;
 	char	**map_array;
 	int		moves_count;
 	int	x;
 	int y;
-}				t_vars;
+}				t_game;
 
 
 
@@ -33,7 +39,7 @@ int	exit_win()
 	return(0);;
 }
 
-int	get_width(t_vars	vars, char **map_array, int lines_count)
+int	get_width(t_game	game, char **map_array, int lines_count)
 {
 	int	width;
 
@@ -43,13 +49,21 @@ int	get_width(t_vars	vars, char **map_array, int lines_count)
 	return (--width * 64);
 }
 
+void	get_path(t_game *game)
+{
+	int width;
+	int height;
+	game->wall = mlx_xpm_file_to_image(game->mlx, "./1.xpm", &width, &height);
+	game->player = mlx_xpm_file_to_image(game->mlx, "./P.xpm", &width, &height);
+	game->exit = mlx_xpm_file_to_image(game->mlx, "./E.xpm", &width, &height);
+	game->carrote = mlx_xpm_file_to_image(game->mlx, "./C.xpm", &width, &height);
+	game->space = mlx_xpm_file_to_image(game->mlx, "./0.xpm", &width, &height);
+}
 
-void	draw_to_win(t_vars vars, char **map_array)
+void	draw_to_win(t_game game, char **map_array)
 {
 	int	y;
 	int	x;
-	int width;
-	int height;
 
 	y = 0;
 	while (map_array[y])
@@ -59,28 +73,23 @@ void	draw_to_win(t_vars vars, char **map_array)
 		{
 			if(map_array[y][x] == '1')
 			{
-				vars.img = mlx_xpm_file_to_image(vars.mlx, "./1.xpm", &width, &height);
-				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,  x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.wall,  x * 64, y * 64);
 			}
 			else if(map_array[y][x] == 'P')
 			{
-				vars.img = mlx_xpm_file_to_image(vars.mlx, "./P.xpm", &width, &height);
-				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.player,   x * 64, y * 64);
 			}
 			else if(map_array[y][x] == 'E')
 			{
-				vars.img = mlx_xpm_file_to_image(vars.mlx, "./E.xpm", &width, &height);
-				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.exit,   x * 64, y * 64);
 			}
 			else if(map_array[y][x] == 'C')
 			{
-				vars.img = mlx_xpm_file_to_image(vars.mlx, "./C.xpm", &width, &height);
-				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.carrote,   x * 64, y * 64);
 			}
 			else if(map_array[y][x] == '0')
 			{
-				vars.img = mlx_xpm_file_to_image(vars.mlx, "./0.xpm", &width, &height);
-				mlx_put_image_to_window(vars.mlx, vars.win, vars.img,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.space,   x * 64, y * 64);
 			}
 			x++;
 
@@ -111,13 +120,13 @@ int	still_has_carrots(char **map_array)
 	return (counter);
 }
 
-void	print_moves(t_vars *vars)
+void	print_moves(t_game *game)
 {	
-	vars->moves_count++;
-	printf("move : %d\n",vars->moves_count);
+	game->moves_count++;
+	printf("move : %d\n",game->moves_count);
 }
 
-void	rabit_move(t_vars *vars,int right_left, int up_down)
+void	rabit_move(t_game *game,int right_left, int up_down)
 {
 	int	x;
 	int y;
@@ -125,43 +134,43 @@ void	rabit_move(t_vars *vars,int right_left, int up_down)
 	x = 0;
 	y = 0;
 
-	while (vars->map_array[y])
+	while (game->map_array[y])
 	{
 		x = 0;
-		while (vars->map_array[y][x])
+		while (game->map_array[y][x])
 		{
-			if(vars->map_array[y][x] == 'P')
+			if(game->map_array[y][x] == 'P')
 			{
-				if (vars->map_array[y + up_down][x + right_left] == 'C')
+				if (game->map_array[y + up_down][x + right_left] == 'C')
 				{
-					vars->map_array[y][x] = '0';
-					vars->map_array[y + up_down][x + right_left] = 'P';
-					mlx_clear_window(vars->mlx, vars->win);
-					draw_to_win(*vars, vars->map_array);
-					vars->moves_count++;
-					printf("move : %d\n",vars->moves_count);
+					game->map_array[y][x] = '0';
+					game->map_array[y + up_down][x + right_left] = 'P';
+					mlx_clear_window(game->mlx, game->win);
+					draw_to_win(*game, game->map_array);
+					game->moves_count++;
+					printf("move : %d\n",game->moves_count);
 					return ;
 				}
-				if (vars->map_array[y + up_down][x + right_left] == '0')
+				if (game->map_array[y + up_down][x + right_left] == '0')
 				{
-					vars->map_array[y][x] = '0';
-					vars->map_array[y + up_down][x + right_left] = 'P';
-					mlx_clear_window(vars->mlx, vars->win);
-					draw_to_win(*vars, vars->map_array);
-					vars->moves_count++;
-					printf("move : %d\n",vars->moves_count);
+					game->map_array[y][x] = '0';
+					game->map_array[y + up_down][x + right_left] = 'P';
+					mlx_clear_window(game->mlx, game->win);
+					draw_to_win(*game, game->map_array);
+					game->moves_count++;
+					printf("move : %d\n",game->moves_count);
 					return ;
 				}
-				// if (vars->map_array[y + up_down][x + right_left] == '1')
+				// if (game->map_array[y + up_down][x + right_left] == '1')
 				// {
 				// 	return ;
 				// }
-				if (vars->map_array[y + up_down][x + right_left] == 'E')
+				if (game->map_array[y + up_down][x + right_left] == 'E')
 				{
-					if (still_has_carrots(vars->map_array) == 0)
+					if (still_has_carrots(game->map_array) == 0)
 					{
-						vars->moves_count++;
-						printf("move : %d\n",vars->moves_count);
+						game->moves_count++;
+						printf("move : %d\n",game->moves_count);
 						exit_win();
 					}
 					return ;
@@ -174,27 +183,25 @@ void	rabit_move(t_vars *vars,int right_left, int up_down)
 	
 }
 
-int	key_hook(int keycode, t_vars *vars)
+int	key_hook(int keycode, t_game *game)
 {
-
-	// printf("keycode == %d\n",keycode);
 	if (keycode == 53)
 		exit_win();
 	if (keycode == 13 || keycode == 126)
 	{
-		rabit_move(vars, 0, -1);
+		rabit_move(game, 0, -1);
 	}
 	if (keycode == 1 || keycode == 125)
 	{
-		rabit_move(vars, 0, 1);
+		rabit_move(game, 0, 1);
 	}
 	if (keycode == 0 || keycode == 123)
 	{
-		rabit_move(vars, -1, 0);
+		rabit_move(game, -1, 0);
 	}
 	if (keycode == 2 || keycode == 124)
 	{
-		rabit_move(vars, 1, 0);
+		rabit_move(game, 1, 0);
 	}
 	return (1);
 }
@@ -206,7 +213,7 @@ int	key_hook(int keycode, t_vars *vars)
 
 int	main(int ac, char **argv)
 {
-	t_vars	vars;
+	t_game	game;
 	int		i;
 	int 	fd;	
 	char    **map_array;
@@ -214,7 +221,7 @@ int	main(int ac, char **argv)
 	int height;
 	int width;
 
-	vars.moves_count = 0;
+	game.moves_count = 0;
 	if (ac != 2)
 	{
 		printf("\033[0;31m Invalid Map Name");
@@ -234,7 +241,7 @@ int	main(int ac, char **argv)
 	if (!map_array)
 		return (0);
 	fill_array_from_File(argv[1], map_array);
-	vars.map_array = map_array;
+	game.map_array = map_array;
 
 
  	if(!check_map_is_valid(map_array,"map.ber"))
@@ -242,15 +249,16 @@ int	main(int ac, char **argv)
 	printf("\n\033[0;32m Valid Map");
     printf("height === %d\n",i * 64);
 
-	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, get_width(vars, map_array, i), 64 * i, "Hello world!");
-	// vars.img = mlx_xpm_file_to_image(vars.mlx, "./background.xpm", &height	, &width);
-	// mlx_put_image_to_window(vars.mlx, vars.win, vars.img,  0, 0);
-	draw_to_win(vars, map_array);
+	game.mlx = mlx_init();
+	game.win = mlx_new_window(game.mlx, get_width(game, map_array, i), 64 * i, "Hello world!");
+	// game.img = mlx_xpm_file_to_image(game.mlx, "./background.xpm", &height	, &width);
+	// mlx_put_image_to_window(game.mlx, game.win, game.img,  0, 0);
+	get_path(&game);
+	draw_to_win(game, map_array);
 	
-	mlx_hook(vars.win,  2, 0,  key_hook,  &vars);
-	mlx_hook(vars.win,  17 , 0,  exit_win, NULL);
-	mlx_loop(vars.mlx);
+	mlx_hook(game.win,  2, 0,  key_hook,  &game);
+	mlx_hook(game.win,  17 , 0,  exit_win, NULL);
+	mlx_loop(game.mlx);
 }
 
 
