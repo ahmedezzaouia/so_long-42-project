@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/21 23:08:06 by ahmez-za          #+#    #+#             */
-/*   Updated: 2021/12/18 13:16:01 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 15:08:52 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	while (ft_is_new_line(save) != 1 && r != 0)
 	{
-		r = read(fd, buffer,5);
+		r = read(fd, buffer, 5);
 		if (r == -1)
 			return (free_buffer(buffer));
 		buffer[r] = '\0';

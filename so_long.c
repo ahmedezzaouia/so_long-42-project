@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:10:22 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/04 14:59:33 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 15:26:31 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	main(int ac, char **argv)
 	ft_printf("\n\033[0;32m Valid Map\n");
 	game.mlx = mlx_init();
 	game.win = mlx_new_window(game.mlx,
-			get_width(game, map_array, i), 64 * i, "So Long");
+			get_width(map_array), 64 * i, "So Long");
 	get_path_images(&game);
 	draw_to_win(game, map_array);
 	mlx_hook(game.win, 2, 0, key_hook, &game);
