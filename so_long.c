@@ -39,7 +39,7 @@ int	exit_win()
 	return(0);;
 }
 
-int	get_width(t_game	game, char **map_array, int lines_count)
+int	get_width(t_game	game1, char **map_array, int lines_count)
 {
 	int	width;
 
@@ -123,7 +123,7 @@ int	still_has_carrots(char **map_array)
 void	print_moves(t_game *game)
 {	
 	game->moves_count++;
-	printf("move : %d\n",game->moves_count);
+	ft_printf("move : %d\n",game->moves_count);
 }
 
 void	rabit_move(t_game *game,int right_left, int up_down)
@@ -148,7 +148,7 @@ void	rabit_move(t_game *game,int right_left, int up_down)
 					mlx_clear_window(game->mlx, game->win);
 					draw_to_win(*game, game->map_array);
 					game->moves_count++;
-					printf("move : %d\n",game->moves_count);
+					ft_printf("move : %d\n",game->moves_count);
 					return ;
 				}
 				if (game->map_array[y + up_down][x + right_left] == '0')
@@ -158,19 +158,15 @@ void	rabit_move(t_game *game,int right_left, int up_down)
 					mlx_clear_window(game->mlx, game->win);
 					draw_to_win(*game, game->map_array);
 					game->moves_count++;
-					printf("move : %d\n",game->moves_count);
+					ft_printf("move : %d\n",game->moves_count);
 					return ;
 				}
-				// if (game->map_array[y + up_down][x + right_left] == '1')
-				// {
-				// 	return ;
-				// }
 				if (game->map_array[y + up_down][x + right_left] == 'E')
 				{
 					if (still_has_carrots(game->map_array) == 0)
 					{
 						game->moves_count++;
-						printf("move : %d\n",game->moves_count);
+						ft_printf("move : %d\n",game->moves_count);
 						exit_win();
 					}
 					return ;
@@ -220,34 +216,32 @@ int	main(int ac, char **argv)
 	char *line;
 	int height;
 	int width;
-
+    
+	game.x = 20;
 	game.moves_count = 0;
 	if (ac != 2)
 	{
-		printf("\033[0;31m Invalid Map Name");
+		ft_printf("\033[0;31m Invalid Map Name");
 		return (0);
 	}
 		
 	if (check_file_path(argv[1]) == 0)
 	{
-		printf("\033[0;31m Invalid Map, shoud add .ber");
+		ft_printf("\033[0;31m Invalid Map, shoud add .ber");
 		return (0);	
 	}
 	i = ft_count_file_lines(argv[1]);
 
-	printf("line length = %d\n",i);
+	ft_printf("line length = %d\n",i);
 
 	map_array = malloc((i + 1) * sizeof(char *));
 	if (!map_array)
 		return (0);
 	fill_array_from_File(argv[1], map_array);
 	game.map_array = map_array;
-
-
  	if(!check_map_is_valid(map_array,"map.ber"))
 	 	return (0);
-	printf("\n\033[0;32m Valid Map");
-    printf("height === %d\n",i * 64);
+	ft_printf("\n\033[0;32m Valid Map\n"); 
 
 	game.mlx = mlx_init();
 	game.win = mlx_new_window(game.mlx, get_width(game, map_array, i), 64 * i, "Hello world!");

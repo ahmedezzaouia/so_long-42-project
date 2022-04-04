@@ -70,8 +70,6 @@ void	fill_array_from_File(char *map_file, char **map_array)
 	}
     map_array[i] = 0;
 	i   = 0;
-	while (map_array[i] != 0)
-		printf("%s",map_array[i++]);
 	close(fd);
 }
 
