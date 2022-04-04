@@ -6,10 +6,9 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:10:22 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/04 11:07:51 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 12:46:22 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "so_long.h"
 
@@ -28,9 +27,9 @@ typedef struct s_game{
 	int		moves_count;
 }				t_game;
 
-int	exit_win()
+int	exit_win(void)
 {
-	exit(1);
+	exit(0);
 	return (0);
 }
 
@@ -56,37 +55,37 @@ void	get_path(t_game *game)
 	game->space = mlx_xpm_file_to_image(game->mlx, "./0.xpm", &w, &h);
 }
 
+void	put_images(t_game game, int x, int y)
+{
+	if (game.map_array[y][x] == '1')
+		mlx_put_image_to_window(game.mlx, game.win,
+			game.wall, x * 64, y * 64);
+	else if (game.map_array[y][x] == 'P')
+		mlx_put_image_to_window(game.mlx,
+			game.win, game.player, x * 64, y * 64);
+	else if (game.map_array[y][x] == 'E')
+		mlx_put_image_to_window(game.mlx,
+			game.win, game.exit, x * 64, y * 64);
+	else if (game.map_array[y][x] == 'C')
+		mlx_put_image_to_window(game.mlx, game.win,
+			game.carrote, x * 64, y * 64);
+	else if (game.map_array[y][x] == '0')
+		mlx_put_image_to_window(game.mlx, game.win,
+			game.space, x * 64, y * 64);
+}
+
 void	draw_to_win(t_game game, char **map_array)
 {
 	int	y;
 	int	x;
-	
+
 	y = 0;
 	while (map_array[y])
 	{
 		x = 0;
 		while (map_array[y][x])
 		{
-			if (map_array[y][x] == '1')
-			{
-				mlx_put_image_to_window(game.mlx, game.win, game.wall, x * 64, y * 64);
-			}
-			else if (map_array[y][x] == 'P')
-			{
-				mlx_put_image_to_window(game.mlx, game.win, game.player, x * 64, y * 64);
-			}
-			else if(map_array[y][x] == 'E')
-			{
-				mlx_put_image_to_window(game.mlx, game.win, game.exit, x * 64, y * 64);
-			}
-			else if(map_array[y][x] == 'C')
-			{
-				mlx_put_image_to_window(game.mlx, game.win, game.carrote, x * 64, y * 64);
-			}
-			else if(map_array[y][x] == '0')
-			{
-				mlx_put_image_to_window(game.mlx, game.win, game.space, x * 64, y * 64);
-			}
+			put_images(game, x, y);
 			x++;
 		}
 		y++;
@@ -108,7 +107,7 @@ int	still_has_carrots(char **map_array)
 		{
 			if (map_array[y][x] == 'C')
 				counter++;
-			x++;	
+			x++;
 		}
 		y++;
 	}
@@ -118,60 +117,54 @@ int	still_has_carrots(char **map_array)
 void	print_moves(t_game *game)
 {	
 	game->moves_count++;
-	ft_printf("move : %d\n",game->moves_count);
+	ft_printf("move : %d\n", game->moves_count);
 }
 
-void	rabit_move(t_game *game,int right_left, int up_down)
+void	change_position(t_game *game, char *current_pos, char *next_pos)
+{
+	*current_pos = '0';
+	*next_pos = 'P';
+	mlx_clear_window(game->mlx, game->win);
+	draw_to_win(*game, game->map_array);
+	print_moves(game);
+}
+
+void	reach_exit(t_game *game)
+{
+	if (still_has_carrots(game->map_array) == 0)
+	{
+		print_moves(game);
+		exit_win();
+	}
+}
+
+void	rabit_move(t_game *game, int right_left, int up_down)
 {
 	int	x;
-	int y;
+	int	y;
 
-	x = 0;
 	y = 0;
-
 	while (game->map_array[y])
 	{
 		x = 0;
 		while (game->map_array[y][x])
 		{
-			if(game->map_array[y][x] == 'P')
+			if (game->map_array[y][x] == 'P')
 			{
 				if (game->map_array[y + up_down][x + right_left] == 'C')
-				{
-					game->map_array[y][x] = '0';
-					game->map_array[y + up_down][x + right_left] = 'P';
-					mlx_clear_window(game->mlx, game->win);
-					draw_to_win(*game, game->map_array);
-					game->moves_count++;
-					ft_printf("move : %d\n",game->moves_count);
-					
-					return ;
-				}
+					change_position(game, &(game->map_array[y][x]),
+						&(game->map_array[y + up_down][x + right_left]));
 				if (game->map_array[y + up_down][x + right_left] == '0')
-				{
-					game->map_array[y][x] = '0';
-					game->map_array[y + up_down][x + right_left] = 'P';
-					mlx_clear_window(game->mlx, game->win);
-					draw_to_win(*game, game->map_array);
-					
-					return ;
-				}
+					change_position(game, &(game->map_array[y][x]),
+						&(game->map_array[y + up_down][x + right_left]));
 				if (game->map_array[y + up_down][x + right_left] == 'E')
-				{
-					if (still_has_carrots(game->map_array) == 0)
-					{
-						game->moves_count++;
-						ft_printf("move : %d\n",game->moves_count);
-						exit_win();
-					}
-					return ;
-				}
+					reach_exit(game);
+				return ;
 			}
 			x++;
 		}
 		y++;
 	}
-	
 }
 
 int	key_hook(int keycode, t_game *game)
@@ -197,49 +190,44 @@ int	key_hook(int keycode, t_game *game)
 	return (1);
 }
 
+void	argv_validate(int ac, char *map_name)
+{
+	if (ac != 2)
+	{
+		ft_printf("\033[0;31m Error\nInvalid Map Name");
+		exit(0);
+	}
+	if (check_file_path(map_name) == 0)
+	{
+		ft_printf("\033[0;31m Invalid Map, shoud add .ber");
+		exit(0);
+	}
+}
+
 int	main(int ac, char **argv)
 {
 	t_game	game;
 	int		i;
-	int 	fd;	
-	char    **map_array;
-	char *line;
-	int height;
-	int width;
-    
+	char	**map_array;
+
 	game.moves_count = 0;
-	if (ac != 2)
-	{
-		ft_printf("\033[0;31m Invalid Map Name");
-		return (0);
-	}
-		
-	if (check_file_path(argv[1]) == 0)
-	{
-		ft_printf("\033[0;31m Invalid Map, shoud add .ber");
-		return (0);	
-	}
+	argv_validate(ac, argv[1]);
 	i = ft_count_file_lines(argv[1]);
-
-	ft_printf("line length = %d\n",i);
-
+	ft_printf("line length = %d\n", i);
 	map_array = malloc((i + 1) * sizeof(char *));
 	if (!map_array)
 		return (0);
 	fill_array_from_File(argv[1], map_array);
 	game.map_array = map_array;
- 	if(!check_map_is_valid(map_array,"map.ber"))
-	 	return (0);
-	ft_printf("\n\033[0;32m Valid Map\n"); 
-
+	if (!check_map_is_valid(map_array, "map.ber"))
+		return (0);
+	ft_printf("\n\033[0;32m Valid Map\n");
 	game.mlx = mlx_init();
-	game.win = mlx_new_window(game.mlx, get_width(game, map_array, i), 64 * i, "So Long");
+	game.win = mlx_new_window(game.mlx,
+			get_width(game, map_array, i), 64 * i, "So Long");
 	get_path(&game);
 	draw_to_win(game, map_array);
-	
-	mlx_hook(game.win,  2, 0,  key_hook,  &game);
-	mlx_hook(game.win,  17 , 0,  exit_win, NULL);
+	mlx_hook(game.win, 2, 0, key_hook, &game);
+	mlx_hook(game.win, 17, 0, exit_win, NULL);
 	mlx_loop(game.mlx);
 }
-
-

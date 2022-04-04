@@ -6,24 +6,22 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/18 10:28:33 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/03 11:16:22 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 13:03:07 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-
-
-int check_file_path(char *path)
+int	check_file_path(char *path)
 {
-    char    *expath;
+	char	*expath;
 
-    expath = ft_strrchr(path, '.'); 
-    if (!expath)
-        return (0);
-    if (ft_strncmp(expath, ".ber", ft_strlen(expath)) != 0)
-        return (0);
-    return(1);
+	expath = ft_strrchr(path, '.');
+	if (!expath)
+		return (0);
+	if (ft_strncmp(expath, ".ber", ft_strlen(expath)) != 0)
+		return (0);
+	return (1);
 }
 
 int check_first_line(char *first)
