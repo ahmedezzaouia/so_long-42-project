@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:10:22 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/04 15:26:31 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 16:53:08 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@ int	main(int ac, char **argv)
 	game.moves_count = 0;
 	argv_validate(ac, argv[1]);
 	i = ft_count_file_lines(argv[1]);
-	ft_printf("line length = %d\n", i);
 	map_array = malloc((i + 1) * sizeof(char *));
 	if (!map_array)
 		return (0);
