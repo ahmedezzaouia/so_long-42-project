@@ -6,14 +6,14 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/14 11:10:22 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/03 17:51:36 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 11:07:51 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "so_long.h"
 
-typedef struct	s_game {
+typedef struct s_game{
 	void	*mlx;
 	void	*win;
 	void	*img;
@@ -26,17 +26,12 @@ typedef struct	s_game {
 	void	*blck_img;
 	char	**map_array;
 	int		moves_count;
-	int	x;
-	int y;
 }				t_game;
-
-
 
 int	exit_win()
 {
-
 	exit(1);
-	return(0);;
+	return (0);
 }
 
 int	get_width(t_game	game1, char **map_array, int lines_count)
@@ -51,48 +46,48 @@ int	get_width(t_game	game1, char **map_array, int lines_count)
 
 void	get_path(t_game *game)
 {
-	int width;
-	int height;
-	game->wall = mlx_xpm_file_to_image(game->mlx, "./1.xpm", &width, &height);
-	game->player = mlx_xpm_file_to_image(game->mlx, "./P.xpm", &width, &height);
-	game->exit = mlx_xpm_file_to_image(game->mlx, "./E.xpm", &width, &height);
-	game->carrote = mlx_xpm_file_to_image(game->mlx, "./C.xpm", &width, &height);
-	game->space = mlx_xpm_file_to_image(game->mlx, "./0.xpm", &width, &height);
+	int	w;
+	int	h;
+
+	game->wall = mlx_xpm_file_to_image(game->mlx, "./1.xpm", &w, &h);
+	game->player = mlx_xpm_file_to_image(game->mlx, "./P.xpm", &w, &h);
+	game->exit = mlx_xpm_file_to_image(game->mlx, "./E.xpm", &w, &h);
+	game->carrote = mlx_xpm_file_to_image(game->mlx, "./C.xpm", &w, &h);
+	game->space = mlx_xpm_file_to_image(game->mlx, "./0.xpm", &w, &h);
 }
 
 void	draw_to_win(t_game game, char **map_array)
 {
 	int	y;
 	int	x;
-
+	
 	y = 0;
 	while (map_array[y])
 	{
 		x = 0;
 		while (map_array[y][x])
 		{
-			if(map_array[y][x] == '1')
+			if (map_array[y][x] == '1')
 			{
-				mlx_put_image_to_window(game.mlx, game.win, game.wall,  x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.wall, x * 64, y * 64);
 			}
-			else if(map_array[y][x] == 'P')
+			else if (map_array[y][x] == 'P')
 			{
-				mlx_put_image_to_window(game.mlx, game.win, game.player,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.player, x * 64, y * 64);
 			}
 			else if(map_array[y][x] == 'E')
 			{
-				mlx_put_image_to_window(game.mlx, game.win, game.exit,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.exit, x * 64, y * 64);
 			}
 			else if(map_array[y][x] == 'C')
 			{
-				mlx_put_image_to_window(game.mlx, game.win, game.carrote,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.carrote, x * 64, y * 64);
 			}
 			else if(map_array[y][x] == '0')
 			{
-				mlx_put_image_to_window(game.mlx, game.win, game.space,   x * 64, y * 64);
+				mlx_put_image_to_window(game.mlx, game.win, game.space, x * 64, y * 64);
 			}
 			x++;
-
 		}
 		y++;
 	}
@@ -100,7 +95,7 @@ void	draw_to_win(t_game game, char **map_array)
 
 int	still_has_carrots(char **map_array)
 {
-	int x;
+	int	x;
 	int	y;
 	int	counter;
 
@@ -149,6 +144,7 @@ void	rabit_move(t_game *game,int right_left, int up_down)
 					draw_to_win(*game, game->map_array);
 					game->moves_count++;
 					ft_printf("move : %d\n",game->moves_count);
+					
 					return ;
 				}
 				if (game->map_array[y + up_down][x + right_left] == '0')
@@ -157,8 +153,7 @@ void	rabit_move(t_game *game,int right_left, int up_down)
 					game->map_array[y + up_down][x + right_left] = 'P';
 					mlx_clear_window(game->mlx, game->win);
 					draw_to_win(*game, game->map_array);
-					game->moves_count++;
-					ft_printf("move : %d\n",game->moves_count);
+					
 					return ;
 				}
 				if (game->map_array[y + up_down][x + right_left] == 'E')
@@ -202,11 +197,6 @@ int	key_hook(int keycode, t_game *game)
 	return (1);
 }
 
-
-
-
-
-
 int	main(int ac, char **argv)
 {
 	t_game	game;
@@ -217,7 +207,6 @@ int	main(int ac, char **argv)
 	int height;
 	int width;
     
-	game.x = 20;
 	game.moves_count = 0;
 	if (ac != 2)
 	{
@@ -244,9 +233,7 @@ int	main(int ac, char **argv)
 	ft_printf("\n\033[0;32m Valid Map\n"); 
 
 	game.mlx = mlx_init();
-	game.win = mlx_new_window(game.mlx, get_width(game, map_array, i), 64 * i, "Hello world!");
-	// game.img = mlx_xpm_file_to_image(game.mlx, "./background.xpm", &height	, &width);
-	// mlx_put_image_to_window(game.mlx, game.win, game.img,  0, 0);
+	game.win = mlx_new_window(game.mlx, get_width(game, map_array, i), 64 * i, "So Long");
 	get_path(&game);
 	draw_to_win(game, map_array);
 	

@@ -123,14 +123,14 @@ int	check_others_charachters(char c, int *counter)
 			*counter += 1 ;
 		if (*counter  > 1  )
 		{
-			printf("\033[0;31m Invalid Map, Double Character");
+			ft_printf("\033[0;31m Error\nInvalid Map, Just One Player");
 			return (0);
 		}
 	
 		return (1);				
 	}
 	else {
-		printf("\033[0;31m Invalid Map, characters is invalid : only (P,E,C,1,0) is allowed");
+		ft_printf("\033[0;31m Error\nInvalid Map, characters is invalid : only (P,E,C,1,0) is allowed");
 		return (0);
 	}
 }
@@ -179,7 +179,7 @@ int	check_exist(char ** map_array)
 	}
 	if (counter == 0)
 	{
-		printf("\033[0;31m Invalid Map, should contain at least one exit");
+		ft_printf("\033[0;31m Error\nInvalid Map, should contain at least one exit");
 		return (0);
 	}
 	return (1);
@@ -199,28 +199,28 @@ int check_map_is_valid(char **map_array, char *map_file)
 	lines_length = ft_count_file_lines(map_file);
 	if (!check_map_line_length(map_array, lines_length))
 	{
-		printf("\033[0;31m Invalid Map, lines length not equals");
+		ft_printf("\033[0;31m Error\nInvalid Map, lines length not equals");
 		return (0);
 	}
 	if(!check_exist(map_array))
 		return (0);
 	if (!is_contain_at_least_C(map_array))
 	{
-		printf("\033[0;31m Invalid Map, sould contain at least one C");
+		ft_printf("\033[0;31m Error\nInvalid Map, sould contain at least one C");
 		return (0);
 	}
 	while (map_array[i] != 0)
 	{
 		if(check_last_and_first_char(map_array[i])  == 0)
 		{
-			printf("\033[0;31m Invalid Map, line should end and start with 1");
+			ft_printf("\033[0;31m Error\nInvalid Map, line should end and start with 1");
 			return (0);
 		}
 		if (i == lines_length - 1 || i == 0)
 		{
 			if(!check_line_is_wall(map_array[i]))
 			{
-				printf("\033[0;31m Invalid Map, first and last lines should be full filled with only 1 char");
+				ft_printf("\033[0;31m Error\nInvalid Map, first and last lines should be full filled with only 1 char");
 				return (0);
 			}
 		}
@@ -237,7 +237,7 @@ int check_map_is_valid(char **map_array, char *map_file)
 	}
 	if (counter != 1 ) 
 		{
-			printf("\033[0;31m Invalid Map, at least  one P");
+			ft_printf("\033[0;31m Error\nInvalid Map, at least  one P");
 			return (0);
 		}
 	return (1);
