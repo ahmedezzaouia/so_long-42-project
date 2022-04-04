@@ -1,4 +1,4 @@
-SRCS = so_long.c get_next_line.c get_next_line_utils.c validate_map.c
+SRCS = so_long.c get_next_line.c get_next_line_utils.c validate_map.c so_long_utils.c so_long_utils2.c
 NAME = so_long
 LIBFT = ./libft/libft.a
 FTPRINTF = ./ft_printf/libftprintf.a

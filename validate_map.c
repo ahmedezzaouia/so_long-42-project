@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/18 10:28:33 by ahmez-za          #+#    #+#             */
-/*   Updated: 2022/04/04 13:03:07 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 13:54:04 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,65 +24,68 @@ int	check_file_path(char *path)
 	return (1);
 }
 
-int check_first_line(char *first)
+int	check_first_line(char *first)
 {
-    size_t i;
+	size_t	i;
 
-    i = 0;
-    while (first[i] == '1')
-        i++;
-    
-    if (ft_strlen(first) == i)
-        return (1);
-    return (0);
+	i = 0;
+	while (first[i] == '1')
+		i++;
+	if (ft_strlen(first) == i)
+		return (1);
+	return (0);
 }
 
 int	ft_count_file_lines(char *map_file)
 {
-	int	i;
-	char *line;
+	int		i;
+	char	*line;
+	int		fd;
 
 	i = 0;
-	int fd = open (map_file, O_RDONLY);
-	while ((line = get_next_line(fd)))
+	fd = open (map_file, O_RDONLY);
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		free(line);
 		i++;
+		line = get_next_line(fd);
 	}
 	close(fd);
 	return (i);
-
 }
 
-void	fill_array_from_File(char *map_file, char **map_array)
+void	fill_array_from_file(char *map_file, char **map_array)
 {
-    char *line;
-	int i;
-	int fd;
+	int		i;
+	int		fd;
+	char	*line;
+
 	i = 0;
-	fd = open (map_file,O_RDONLY);
-	while ((line = get_next_line(fd)))
+	fd = open (map_file, O_RDONLY);
+	line = get_next_line(fd);
+	while (line != NULL)
 	{
 		map_array[i] = line;
 		i++;
+		line = get_next_line(fd);
 	}
-    map_array[i] = 0;
-	i   = 0;
+	map_array[i] = 0;
+	i = 0;
 	close(fd);
 }
 
 int	check_map_line_length(char **map_array, int file_lines)
 {
-	int	i;
+	int		i;
 	size_t	line_length;
 
 	i = 0;
-
 	while (map_array[i])
 	{
 		line_length = ft_strlen(map_array[i]);
-		if (i == file_lines  - 1)
-		 	line_length += 1;
+		if (i == file_lines - 1)
+			line_length += 1;
 		if (ft_strlen(map_array[0]) != line_length)
 			return (0);
 		i++;
@@ -93,15 +96,16 @@ int	check_map_line_length(char **map_array, int file_lines)
 int	check_last_and_first_char(char *line)
 {
 	size_t	length;
+
 	length = ft_strlen(line) - 1;
 	if (line[length] == '\n' )
 		length--;
 	return (line[0] == '1' && line[length] == '1');
 }
 
-int check_line_is_wall(char *line)
+int	check_line_is_wall(char *line)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (line[i] != '\n' && line[i] != '\0')
@@ -119,21 +123,21 @@ int	check_others_charachters(char c, int *counter)
 	{
 		if (c == 'P' )
 			*counter += 1 ;
-		if (*counter  > 1  )
+		if (*counter > 1)
 		{
 			ft_printf("\033[0;31m Error\nInvalid Map, Just One Player");
 			return (0);
 		}
-	
-		return (1);				
+		return (1);
 	}
-	else {
-		ft_printf("\033[0;31m Error\nInvalid Map, characters is invalid : only (P,E,C,1,0) is allowed");
+	else
+	{
+		ft_printf("\033[0;31m Error\nInvalid Map, Only (P,E,C,1,0) is allowed");
 		return (0);
 	}
 }
 
-int	is_contain_at_least_C(char **map_array)
+int	is_contain_at_least_c(char **map_array)
 {
 	int	i;
 	int	j;
@@ -154,37 +158,76 @@ int	is_contain_at_least_C(char **map_array)
 	return (0);
 }
 
-
-int	check_exist(char ** map_array)
+int	check_exist(char **map_array)
 {
-	int i;
-	int	j;
-	int counter;
-	
+	int		i;
+	int		j;
+	int		counter;
+
 	i = 0;
 	counter = 0;
-	while(map_array[i])
+	while (map_array[i])
 	{
 		j = 0;
-		while(map_array[i][j])
+		while (map_array[i][j])
 		{
-			char c = map_array[i][j];
-			if(c == 'E')
+			if (map_array[i][j] == 'E')
 				counter++;
 			j++;
 		}
-		i++;	
+		i++;
 	}
 	if (counter == 0)
 	{
-		ft_printf("\033[0;31m Error\nInvalid Map, should contain at least one exit");
+		ft_printf("\033[0;31m Error\nInvalid Map, should at least one exit");
 		return (0);
 	}
 	return (1);
-	
 }
 
-int check_map_is_valid(char **map_array, char *map_file)
+void	map_validate_splite(char **map_array, int lines_length)
+{
+	if (!check_map_line_length(map_array, lines_length))
+	{
+		ft_printf("\033[0;31m Error\nInvalid Map, lines length not equals");
+		exit (0);
+	}
+	if (!check_exist(map_array))
+		exit (0);
+	if (!is_contain_at_least_c(map_array))
+	{
+		ft_printf("\033[0;31m Error\nInvalid Map, sould contain at least one C");
+		exit (0);
+	}
+}
+
+void	rectangle_validate(char **map_array, int i, int lines_length)
+{
+	if (check_last_and_first_char(map_array[i]) == 0)
+	{
+		ft_printf("\033[0;31m Error\nInvalid Map, line should surrond with 1");
+		exit (0);
+	}
+	if (i == lines_length - 1 || i == 0)
+	{
+		if (!check_line_is_wall(map_array[i]))
+		{
+			ft_printf("\033[0;31m Error\nInvalid Map, first and last Nofulled 1");
+			exit (0);
+		}
+	}
+}
+
+void	check_player_counter(int counter)
+{
+	if (counter != 1)
+	{
+		ft_printf("\033[0;31m Error\nInvalid Map, at least  one P");
+		exit (0);
+	}
+}
+
+int	check_map_is_valid(char **map_array, char *map_file)
 {
 	int	i;
 	int	j;
@@ -195,48 +238,19 @@ int check_map_is_valid(char **map_array, char *map_file)
 	i = 0;
 	counter = 0;
 	lines_length = ft_count_file_lines(map_file);
-	if (!check_map_line_length(map_array, lines_length))
-	{
-		ft_printf("\033[0;31m Error\nInvalid Map, lines length not equals");
-		return (0);
-	}
-	if(!check_exist(map_array))
-		return (0);
-	if (!is_contain_at_least_C(map_array))
-	{
-		ft_printf("\033[0;31m Error\nInvalid Map, sould contain at least one C");
-		return (0);
-	}
+	map_validate_splite(map_array, lines_length);
 	while (map_array[i] != 0)
 	{
-		if(check_last_and_first_char(map_array[i])  == 0)
-		{
-			ft_printf("\033[0;31m Error\nInvalid Map, line should end and start with 1");
-			return (0);
-		}
-		if (i == lines_length - 1 || i == 0)
-		{
-			if(!check_line_is_wall(map_array[i]))
-			{
-				ft_printf("\033[0;31m Error\nInvalid Map, first and last lines should be full filled with only 1 char");
-				return (0);
-			}
-		}
+		rectangle_validate(map_array, i, lines_length);
 		j = 0;
 		while (map_array[i][j] != '\n' && map_array[i][j] != '\0')
 		{
-			char c = map_array[i][j];
-			if (!check_others_charachters(c, &counter))
+			if (!check_others_charachters(map_array[i][j], &counter))
 				return (0);
 			j++;
-		}
-		
+		}	
 		i++;
 	}
-	if (counter != 1 ) 
-		{
-			ft_printf("\033[0;31m Error\nInvalid Map, at least  one P");
-			return (0);
-		}
+	check_player_counter(counter);
 	return (1);
 }

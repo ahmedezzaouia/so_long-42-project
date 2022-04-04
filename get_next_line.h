@@ -6,7 +6,7 @@
 /*   By: ahmez-za <ahmez-za@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/23 16:45:03 by ahmez-za          #+#    #+#             */
-/*   Updated: 2021/12/18 13:04:18 by ahmez-za         ###   ########.fr       */
+/*   Updated: 2022/04/04 14:59:18 by ahmez-za         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include<unistd.h>
 # include<stdlib.h>
-
 
 size_t	ft_strlen(const char *str);
 void	ft_bzero(void *s, size_t n);
